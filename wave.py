@@ -7,11 +7,10 @@ class Wave:
         self.tone = data
         self.fs = fs
 
-        self.normalize()
-
     def normalize(self):
         norm = max(abs(self.tone))
-        self.tone = self.tone / norm
+        if norm > 1:
+            self.tone = self.tone / norm
 
     def __add__(self, other):
         if self.fs != other.fs:

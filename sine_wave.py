@@ -12,7 +12,7 @@ class SineWave(wave.Wave):
         sample_num = np.round(t_max * fs)
         self.ts = 1 / fs
         self.t = np.array([k * self.ts for k in range(sample_num)])
-        tone = self.amp * np.sin(2 * np.pi * self.f * self.t + np.pi / 2)
+        tone = self.amp * np.cos(2 * np.pi * self.f * self.t + phase)
         super(SineWave, self).__init__(tone, fs)
 
     @property
