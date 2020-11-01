@@ -39,7 +39,10 @@ class TestWave(unittest.TestCase):
     def test_extend_right(self):
         for base, extra in TEST_ARRAYS:
             try:
-                assert_array_equal(Wave(base).extend(extra), Wave(base + extra))
+                a = Wave(base)
+                a.extend(extra)
+                b = Wave(base + extra)
+                self.assertEqual(a, b)
             except:
                 print("base: %s, extra: %s, result: %s" % (base, extra, base+extra))
                 raise
@@ -47,7 +50,10 @@ class TestWave(unittest.TestCase):
     def test_extend_left(self):
         for base, extra in TEST_ARRAYS:
             try:
-                assert_array_equal(Wave(base).extend(extra, left=True), Wave(extra + base))
+                a = Wave(base)
+                a.extend(extra, left=True)
+                b = Wave(base + extra)
+                self.assertEqual(a, b)
             except:
                 print("base: %s, extra: %s, result: %s" % (base, extra, base+extra))
                 raise
