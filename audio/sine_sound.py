@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cmath
 from bisect import bisect_right
-#import sounddevice as sd
+import sounddevice as sd
 from sine_wave import *
 from wave import *
 
