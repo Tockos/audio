@@ -33,7 +33,9 @@ num_of_periods = 3
 point_num = num_of_periods * sine_waves[0].samples_in_period
 
 from_idx = shifts[1]*sine_waves[0].fs
-# plt.plot(sound.tone[from_idx:from_idx+point_num])
+fig, subplots = plt.subplots(2)
+
+subplots[0].plot(sound.t_space[from_idx:from_idx+point_num], sound.tone[from_idx:from_idx+point_num])
 
 N = len(sound.tone)
 spect = np.fft.fftshift(np.fft.fft(sound.tone))
@@ -43,7 +45,7 @@ r_spect = 2/N*np.fft.rfft(sound.tone)
 r_freq_space = np.linspace(0, sine_waves[0].fs/2, int(np.ceil(N/2))+1)
 
 # plt.plot(freq_space, np.abs(spect))
-plt.plot(r_freq_space, np.abs(r_spect))
+subplots[1].plot(r_freq_space, np.abs(r_spect))
 # plt.plot(freq_space, np.arctan(spect.imag/spect.real))
 
 plt.show()
