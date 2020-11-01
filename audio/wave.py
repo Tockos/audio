@@ -1,11 +1,16 @@
-
 import numpy as np
+
 
 class Wave(np.ndarray):
     def __new__(cls, array, fs=1):
         obj = np.asarray(array).view(cls)
         obj.fs = fs
+        obj.ts = 1 / fs
         return obj
+
+    @property
+    def t_domain(self):
+        return self.ts * np.array(range(len(self)))
 
     def __repr__(self):
         return "%s(%s)" % (self.__class__.__name__, self)
@@ -57,5 +62,4 @@ class Wave(np.ndarray):
             this = self.extend(np.zeros(abs(diff)))
 
         # Add element by element to avoid endless recursion
-        return np.array([a+b for a, b in zip(this, other)]).view(self.__class__)
-
+        return np.array([a + b for a, b in zip(this, other)]).view(Wave)

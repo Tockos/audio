@@ -4,8 +4,8 @@ import numpy as np
 import cmath
 from bisect import bisect_right
 import sounddevice as sd
-from sine_wave import *
-from wave import *
+from audio.sine_wave import SineWave
+from audio.wave import Wave
 
 t_max = 3  # s
 t_shift = 1  # s
@@ -20,12 +20,13 @@ freqs = [f_base, f_base * 5 / 4, f_base * 3 / 2]
 amps = [0.5, 0.3, 0.2]
 shifts = [1, 2]  # sec
 
-sine_waves = [SineWave(t_max=3, frequency=f, amplitude=amp) for f, amp in zip(freqs, amps)]
+sine_waves = [SineWave(t_max=3, f=f, amp=amp) for f, amp in zip(freqs, amps)]
 # sine_waves[1].shift(shifts[0])
 # sine_waves[2].shift(shifts[1])
 
+example = np.add(sine_waves[0], sine_waves[1])
 sound = np.sum(sine_waves)
-sound.normalize()
+sound.norm()
 # sd.play(sound.tone, f_sampling)
 # status = sd.wait()  # Wait until file is done playing
 

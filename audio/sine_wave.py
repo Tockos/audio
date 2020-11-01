@@ -1,19 +1,20 @@
 import numpy as np
-import wave
+from audio.wave import Wave
 
 
-class SineWave(wave.Wave):
+class SineWave(Wave):
 
-    def __init__(self, t_max=1, fs=24000, frequency=440, amplitude=1, phase=0):
-        self.f = frequency
-        self.amp = amplitude
-        self.phase = phase
-        self.t_max = t_max
+    def __new__(cls, t_max=1, fs=24000, f=440, amp=1, phase=0):
         sample_num = np.round(t_max * fs)
-        self.ts = 1 / fs
-        self.t = np.array([k * self.ts for k in range(sample_num)])
-        tone = self.amp * np.cos(2 * np.pi * self.f * self.t + phase)
-        super(SineWave, self).__init__(tone, fs)
+        t = np.array([n / fs for n in range(sample_num)])
+        tone = amp * np.cos(2 * np.pi * f * t + phase)
+        obj = super(SineWave, cls).__new__(cls, tone, fs)
+        obj.f = f
+        obj.amp = amp
+        obj.phase = phase
+        obj.t_max = t_max
+        return obj
+
 
     @property
     def samples_in_period(self):
