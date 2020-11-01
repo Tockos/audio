@@ -7,9 +7,6 @@ class Wave(np.ndarray):
         obj.fs = fs
         return obj
 
-    def __len__(self):
-        return self.size
-
     def __repr__(self):
         return "%s(%s)" % (self.__class__.__name__, self)
 
