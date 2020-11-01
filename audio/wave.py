@@ -1,5 +1,5 @@
-
 import numpy as np
+
 
 class Wave(np.ndarray):
     def __new__(cls, array, fs=1):
@@ -14,7 +14,8 @@ class Wave(np.ndarray):
         """
         Extend current array with another
 
-        :param left: bool - extend on the left side. Other on the rigth side
+        :param left: bool - extend on the left side. Other on the right side
+        :param array: array - array to extend with
         :returns: extended copy object
         """
 
@@ -57,5 +58,4 @@ class Wave(np.ndarray):
             this = self.extend(np.zeros(abs(diff)))
 
         # Add element by element to avoid endless recursion
-        return np.array([a+b for a, b in zip(this, other)]).view(self.__class__)
-
+        return np.array([a + b for a, b in zip(this, other)]).view(self.__class__)
