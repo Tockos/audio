@@ -1,14 +1,43 @@
 import numpy as np
 
 
-class Wave(np.ndarray):
-    def __new__(cls, array, fs=1):
-        obj = np.asarray(array).view(cls)
-        obj.fs = fs
-        return obj
+class Wave:
+    def __init__(self, data, fs=1):
+        self._data = np.array(data)
+        self.fs = fs
+        self.ts = 1 / fs
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, self)
+        return "%s(%s)" % (self.__class__.__name__, self.data)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __eq__(self, other):
+        if self.__class__ != other.__class__ or self.fs != other.fs:
+            return False
+
+        if len(self.data) == len(other.data) == 0:
+            # Comparison of empty arrays return with False by default
+            return True
+
+        # The array comparison returns with a list of bools
+        return all(self.data == other.data)
+
+    @property
+    def data(self):
+        return self._data
+
+    def norm(self, reference=1):
+        """
+        Normalize data with reference number
+
+        :param reference: reference number for aligning the data to.
+        """
+
+        maximum = max(abs(self.data))
+        if maximum > reference:
+            self._data /= maximum
 
     def extend(self, array, left=False):
         """
@@ -19,43 +48,32 @@ class Wave(np.ndarray):
         :returns: extended copy object
         """
 
-        data = (array, self) if left is True else (self, array)
-        return np.concatenate(data).view(self.__class__)
-
-    def norm(self, reference=1):
-        """
-        Normalize data with reference number
-
-        :param reference: reference number for aligning the data to.
-        """
-
-        maximum = max(abs(self))
-        if maximum > reference:
-            self /= maximum
+        data = (array, self._data) if left is True else (self._data, array)
+        return Wave(np.concatenate(data), fs=self.fs)
 
     def shift(self, t_sec):
         """
         Shift the data with t_sec by adding zeros to the array.
 
         :param t_sec: seconds to shift the data (right if > 0; left if < 0)
-        :returns: right shifted copy object
+        :returns: shifted copy object
         """
 
         return self.extend(np.zeros(t_sec * self.fs), left=t_sec < 0)
 
     def __add__(self, other):
+        if isinstance(other, int):
+            self._data += other
+            return self
+
         if self.fs != other.fs:
             raise ValueError("fs doesn't match")
 
-        # Copy self object
-        this = self
-
         # Extend the smaller array if there is diff
-        diff = len(this) - len(other)
+        diff = len(self) - len(other)
         if diff > 0:
-            other = other.extend(np.zeros(diff))
+            other.extend(np.zeros(diff))
         elif diff < 0:
-            this = self.extend(np.zeros(abs(diff)))
+            self.extend(np.zeros(abs(diff)))
 
-        # Add element by element to avoid endless recursion
-        return np.array([a + b for a, b in zip(this, other)]).view(self.__class__)
+        return Wave(self.data + other.data, fs=self.fs)

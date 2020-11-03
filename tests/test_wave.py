@@ -31,6 +31,7 @@ TEST_ARRAYS = (
     (BIG, BIG),
 )
 
+
 class TestWave(unittest.TestCase):
 
     # -------------------------------------------------------------------------
@@ -39,16 +40,22 @@ class TestWave(unittest.TestCase):
     def test_extend_right(self):
         for base, extra in TEST_ARRAYS:
             try:
-                assert_array_equal(Wave(base).extend(extra), Wave(base + extra))
-            except:
+                a = Wave(base)
+                a.extend(extra)
+                b = Wave(base + extra)
+                self.assertEqual(a, b)
+            except AssertionError:
                 print("base: %s, extra: %s, result: %s" % (base, extra, base+extra))
                 raise
 
     def test_extend_left(self):
         for base, extra in TEST_ARRAYS:
             try:
-                assert_array_equal(Wave(base).extend(extra, left=True), Wave(extra + base))
-            except:
+                a = Wave(base)
+                a.extend(extra, left=True)
+                b = Wave(base + extra)
+                self.assertEqual(a, b)
+            except AssertionError:
                 print("base: %s, extra: %s, result: %s" % (base, extra, base+extra))
                 raise
 
@@ -68,7 +75,7 @@ class TestWave(unittest.TestCase):
         for a1, a2 in TEST_ARRAYS:
             try:
                 result = [x+y for x, y in zip_longest(a1, a2, fillvalue=0)]
-                assert_array_equal(Wave(a1) + Wave(a2), Wave(result))
+                self.assertEqual(Wave(a1) + Wave(a2), Wave(result))
             except:
                 print("a: %s, b: %s, result: %s" % (a1, a2, result))
                 raise

@@ -45,5 +45,5 @@ r_freq_space = np.linspace(0, sine_waves[0].fs/2, int(np.ceil(N/2))+1)
 # plt.plot(freq_space, np.abs(spect))
 plt.plot(r_freq_space, np.abs(r_spect))
 # plt.plot(freq_space, np.arctan(spect.imag/spect.real))
-
+3
 plt.show()
