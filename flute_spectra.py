@@ -16,7 +16,7 @@ norm_samples = samples32/max_amp
 # sd.play(norm_samples, 2*fs)
 # status = sd.wait()  # Wait until file is done playing
 a = 10
-flute_spect = np.fft.rfft(norm_samples)
+flute_spect = np.fft.rfft(abs(norm_samples))
 plt.plot(flute_spect)
 # plt.plot(norm_samples[:100000])
 plt.show()
