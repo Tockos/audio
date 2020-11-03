@@ -28,19 +28,6 @@ class Wave:
     def data(self):
         return self._data
 
-    def extend(self, array, left=False):
-        """
-        Extend current array with another
-
-        :param left: bool - extend on the left side. Other on the right side
-        :param array: array - array to extend with
-        :returns: extended copy object
-        """
-
-        data = (self._data, array)
-        #data = (array, self._data) if left is True else (self._data, array)
-        self._data =  np.concatenate(data)
-
     def norm(self, reference=1):
         """
         Normalize data with reference number
@@ -52,17 +39,33 @@ class Wave:
         if maximum > reference:
             self._data /= maximum
 
+    def extend(self, array, left=False):
+        """
+        Extend current array with another
+
+        :param left: bool - extend on the left side. Other on the right side
+        :param array: array - array to extend with
+        :returns: extended copy object
+        """
+
+        data = (array, self._data) if left is True else (self._data, array)
+        return Wave(np.concatenate(data), fs=self.fs)
+
     def shift(self, t_sec):
         """
         Shift the data with t_sec by adding zeros to the array.
 
         :param t_sec: seconds to shift the data (right if > 0; left if < 0)
-        :returns: right shifted copy object
+        :returns: shifted copy object
         """
 
-        self.extend(np.zeros(t_sec * self.fs), left=t_sec < 0)
+        return self.extend(np.zeros(t_sec * self.fs), left=t_sec < 0)
 
     def __add__(self, other):
+        if isinstance(other, int):
+            self._data += other
+            return self
+
         if self.fs != other.fs:
             raise ValueError("fs doesn't match")
 
@@ -73,5 +76,4 @@ class Wave:
         elif diff < 0:
             self.extend(np.zeros(abs(diff)))
 
-        # Add element by element to avoid endless recursion
         return Wave(self.data + other.data, fs=self.fs)
